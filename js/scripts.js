@@ -25,6 +25,10 @@ AddressBook.prototype.findContact = function(id) {
   return false;
 }
 
+AddressBook.prototype.deleteEmail = function(email) {
+  delete this.emailAddress;
+}
+
 AddressBook.prototype.deleteContact = function(id) {
   for (var i=0; i< this.contacts.length; i++) {
     if (this.contacts[i]) {
@@ -46,9 +50,34 @@ function Contact(firstName, lastName, phoneNumber, emailAddress, physicalAddress
   this.physicalAddress = physicalAddress
 }
 
+//not working, yet.
 Contact.prototype.fullName = function() {
   return this.firstName + " " + this.lastName;
 }
+//
+// AddressBook.prototype.deleteEmailAddress = function(id) {
+//   for (var i=0; i< this.contacts.length; i++) {
+//     if (this.contacts[i]) {
+//       if (this.contacts[i].id == id) {
+//         delete this.emailAddress;
+//         return true;
+//       }
+//     }
+//   };
+//   return false;
+// }
+//
+// AddressBook.prototype.deletePhysicalAddress = function(id) {
+//   for (var i=0; i< this.contacts.length; i++) {
+//     if (this.contacts[i]) {
+//       if (this.contacts[i].id == id) {
+//         delete this.physicalAddress;
+//         return true;
+//       }
+//     }
+//   };
+//   return false;
+// }
 
 // User Interface Logic ---------
 var addressBook = new AddressBook();
@@ -75,9 +104,13 @@ function showContact(contactId) {
   buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
 
-function deleteAddresses(contactId){
-  
-}
+// function deleteAddresses(contactId){
+//   $('.btn').onclick(.remove(Contact.emailAddress));
+// }
+
+//
+//   $('.btn').onclick().remove(this.);
+// }
 
 function attachContactListeners() {
   $("ul#contacts").on("click", "li", function() {
@@ -85,6 +118,7 @@ function attachContactListeners() {
   });
   $("#buttons").on("click", ".deleteButton", function() {
     addressBook.deleteContact(this.id);
+    addressBook.deleteEmail(this.id); //not functional yet
     $("#show-contact").hide();
     displayContactDetails(addressBook);
   });
