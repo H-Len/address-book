@@ -75,6 +75,10 @@ function showContact(contactId) {
   buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
 
+function deleteAddresses(contactId){
+  
+}
+
 function attachContactListeners() {
   $("ul#contacts").on("click", "li", function() {
     showContact(this.id);
