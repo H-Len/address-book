@@ -21,12 +21,15 @@ AddressBook.prototype.findContact = function(id) {
         return this.contacts[i];
       }
     }
-  };
+  }
   return false;
 }
 
-AddressBook.prototype.deleteEmail = function(email) {
-  delete this.emailAddress;
+Contact.prototype.deleteEmail = function() {
+  if (this.emailAddress) {
+    delete this.emailAddress;
+    return true;
+  }
 }
 
 AddressBook.prototype.deleteContact = function(id) {
@@ -37,7 +40,7 @@ AddressBook.prototype.deleteContact = function(id) {
         return true;
       }
     }
-  };
+  }
   return false;
 }
 
@@ -52,20 +55,23 @@ function Contact(firstName, lastName, phoneNumber, emailAddress, physicalAddress
 
 //not working, yet.
 Contact.prototype.fullName = function() {
-  return this.firstName + " " + this.lastName;
+  console.log(this.firstName + " " + this.lastName);
+    return this.firstName + " " + this.lastName;
 }
-//
+
 // AddressBook.prototype.deleteEmailAddress = function(id) {
 //   for (var i=0; i< this.contacts.length; i++) {
 //     if (this.contacts[i]) {
 //       if (this.contacts[i].id == id) {
-//         delete this.emailAddress;
+//         remove this.emailAddress;
 //         return true;
 //       }
 //     }
 //   };
 //   return false;
 // }
+//
+
 //
 // AddressBook.prototype.deletePhysicalAddress = function(id) {
 //   for (var i=0; i< this.contacts.length; i++) {
@@ -86,7 +92,7 @@ function displayContactDetails(addressBookToDisplay) {
   var contactsList = $("ul#contacts");
   var htmlForContactInfo = "";
   addressBookToDisplay.contacts.forEach(function(contact) {
-    htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
+    htmlForContactInfo += "<li id= " + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
   });
   contactsList.html(htmlForContactInfo);
 };
@@ -97,32 +103,53 @@ function showContact(contactId) {
   $(".first-name").html(contact.firstName);
   $(".last-name").html(contact.lastName);
   $(".phone-number").html(contact.phoneNumber);
-  $(".email-address").html(contact.emailAddress);
+  if (contact.emailAddress) {
+    $(".email-address").html(contact.emailAddress);
+
+  } else {
+    $(".email-address").html("n/a");
+
+  }
   $(".physical-address").html(contact.physicalAddress);
   var buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
+  buttons.append("<button class='deleteButton' >Delete</button>");
+  buttons.append("<button class='deleteEmail' id='" + contact.id + "'>Delete Email</button>");
 }
 
-// function deleteAddresses(contactId){
-//   $('.btn').onclick(.remove(Contact.emailAddress));
-// }
+ function deleteAddresses(contactId){
+  //$('.btn').onclick(.remove(Contact.emailAddress));
+}
 
-//
-//   $('.btn').onclick().remove(this.);
-// }
+
+  //$('.btn').onclick().remove(this.);
+//}
 
 function attachContactListeners() {
   $("ul#contacts").on("click", "li", function() {
     showContact(this.id);
   });
   $("#buttons").on("click", ".deleteButton", function() {
-    addressBook.deleteContact(this.id);
-    addressBook.deleteEmail(this.id); //not functional yet
-    $("#show-contact").hide();
-    displayContactDetails(addressBook);
+    // addressBook.deleteContact(this.id);
+    // addressBook.deleteEmail(this.id); //not functional yet
+    // $("#show-contact").hide();
+    // displayContactDetails(addressBook);
   });
-};
+  $("#buttons").on("click", ".deleteEmail", function() {
+    var thisID = this.id;
+    console.log(thisID);
+    var thisContact = addressBook.findContact(thisID);
+    console.log(thisContact);
+    thisContact.deleteEmail();
+    console.log(addressBook);
+    displayContactDetails(addressBook);
+
+    //addressBook.deleteEmail(this.id); //not functional yet
+    //displayContactDetails(addressBook);
+});
+
+}
+
 
 $(document).ready(function() {
   attachContactListeners();
@@ -141,5 +168,5 @@ $(document).ready(function() {
     var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber, inputtedEmailAddress, inputtedPhysicalAddress);
     addressBook.addContact(newContact);
     displayContactDetails(addressBook);
-  })
-})
+  });
+});
