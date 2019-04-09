@@ -1,7 +1,52 @@
+// Business Logic for AddressBook ---------
+function AddressBook() {
+  this.contacts = [],
+  this.currentId = 0
+}
+
+AddressBook.prototype.addContact = function(contact) {
+  contact.id = this.assignId();
+  this.contacts.push(contact);
+}
+
+AddressBook.prototype.assignId = function() {
+  this.currentId += 1;
+  return this.currentId;
+}
+
+
+//Find a Contact:
+
+AddressBook.prototype.findContact = function(id) {
+  for (var i=0; i< this.contacts.length; i++) {
+    if (this.contacts[i]) {
+      if (this.contacts[i].id == id) {
+        return this.contacts[i];
+      }
+    }
+  };
+  return false;
+}
+
+
+//Delete a Contact:
+
+AddressBook.prototype.deleteContact = function(id) {
+  for (var i=0; i< this.contacts.length; i++) {
+    if (this.contacts[i].id == id) {
+      delete this.contacts[i];
+      return true;
+    }
+  };
+  return false;
+}
+
+
+// Business Logic for Contacts ---------
 function Contact(firstName, lastName, phoneNumber) {
-  this.firstName = firstName;
-  this.lastName = lastName;
-  this.phoneNumber = phoneNumber;
+  this.firstName = firstName,
+  this.lastName = lastName,
+  this.phoneNumber = phoneNumber
 }
 
 Contact.prototype.fullName = function() {
@@ -10,19 +55,26 @@ Contact.prototype.fullName = function() {
 
 
 
-//To create relationships among objects, use properties whose values are arrays of other objects:
+// User Interface Logic ---------
+var addressBook = new AddressBook();
 
-var pdx = { name: "Portland" };
-var sfo = { name: "San Francisco" };
-var sea = { name: "Seattle" };
+function displayContactDetails(addressBookToDisplay) {
+  var contactsList = $("ul#contacts");
+  var htmlForContactInfo = "";
+  addressBookToDisplay.contacts.forEach(function(contact) {
+    htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
+  });
+  contactsList.html(htmlForContactInfo);
+};
 
-var usa = { name: "United States of America", cities: [pdx, sfo, sea] };
-
-//For consistency when using similar objects, use an empty array rather than not defining the property:
-
-var uruguay = { name: "Uruguay", cities: [] };
-
-//Add more objects to the array property:
-
-var mlz = { name: "Melo" };
-uruguay.cities.push(mlz);
+$(document).ready(function() {
+  $("form#new-contact").submit(function(event) {
+    event.preventDefault();
+    var inputtedFirstName = $("input#new-first-name").val();
+    var inputtedLastName = $("input#new-last-name").val();
+    var inputtedPhoneNumber = $("input#new-phone-number").val();
+    var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
+    addressBook.addContact(newContact);
+    displayContactDetails(addressBook);
+  })
+})
